@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'weather.dart';
+import 'weather_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,46 +13,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return ChangeNotifierProvider(
-      create: (context) => GetWeather(),
-      child: MaterialApp(
+    return
+      MaterialApp(
         title: "Weather App",
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
         ),
-          home: PageWeather(),
-      )
+          home: const WeatherPage(),
+
     );
   }
 }
 
-class PageWeather extends StatelessWidget
-{
-  @override
-  Widget build(BuildContext context) {
-      var inf = context.watch<GetWeather>();
-      return Scaffold(
-        body:Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:
-            [
-              Text('Weather info'),
-              Text(inf.info),
-              ElevatedButton(
-                  onPressed: () {
-                    inf.getWeather();
-                    },
-                  child: Text("Get Weather!"),
-              ),
-
-            ]
-        )
-      );
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-
-}
 
 
