@@ -8,81 +8,34 @@ import 'package:permission_handler/permission_handler.dart';
 class BLEWorker extends GetxController{
 
   //Stream <List<ScanResult>> stream = Stream.empty();
+  Stream<List<ScanResult>>  scanResult = Stream.empty();
   Future scanDevices() async{
     bool connectGranted = await Permission.bluetoothConnect.request().isGranted;
     bool scanGranted = await Permission.bluetoothScan.request().isGranted;
+    bool st = await Permission.bluetoothAdvertise.request().isGranted;
     bool stateBle = false;
-    FlutterBluePlus.adapterState.listen((BluetoothAdapterState state){
-
-      print(state);
-      if(state == BluetoothAdapterState.on)
-        {
-          stateBle = true;
-        }
-      else
-        {
-          stateBle = false;
-
-        }
-
-    },
-      onDone: () => {print("ready!")},
-    );
-
-
-    if(stateBle)
-      {
-        if(scanGranted && connectGranted)
-        {
-          var subscription = FlutterBluePlus.onScanResults.listen((results){
-            if(results.isNotEmpty){
-              ScanResult r = results.last;
-              print('${r.device.remoteId}');
-            }
-          },
-              onError: (e)=> print(e)
-          );
-          //FlutterBluePlus.cancelWhenScanComplete(subscription);
+    if(connectGranted && scanGranted && st){
+      var subscription = FlutterBluePlus.onScanResults.listen((results){
+        if(results.isNotEmpty){
+          ScanResult r = results.last;
+          print("results:");
+          print('${r.advertisementData.advName}');
         }
         else
-        {
-          print("No access");
-        }
-      }
-    else
-      {
-        print("Need turn on Ble");
-        await FlutterBluePlus.turnOn();
-      }
-
-
-  }
-
-
-/*  BluetoothAdapterState state = BluetoothAdapterState.off;
-
-  void initBle() async{
-    print("Start listen");
-    if(await FlutterBluePlus.isSupported){
-     await FlutterBluePlus.adapterState.listen((state){
-        print(state);
-        if(state == BluetoothAdapterState.on)
           {
-            print("Turn ON!");
-            FlutterBluePlus.turnOn();
+            print("results empty");
           }
       },
-        onError: (e) => print(e),
+          onError: (e)=> print('error $e'),
+
       );
+      FlutterBluePlus.cancelWhenScanComplete(subscription);
+      await FlutterBluePlus.adapterState.where((val) => val == BluetoothAdapterState.on).first;
+      await FlutterBluePlus.startScan(
+        androidLegacy: true,
+        timeout: Duration(seconds: 15),
+      );
+      await FlutterBluePlus.isScanning.where((val) => val == false).first;
     }
-    else
-      {
-        print("No bluetooth");
-      }
-
-
   }
-
-  Future<void> scan() async{
-  }*/
 }
