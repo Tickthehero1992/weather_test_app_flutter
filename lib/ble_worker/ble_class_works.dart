@@ -29,7 +29,14 @@ class BLEWorker extends GetxController{
 
       );
       FlutterBluePlus.cancelWhenScanComplete(subscription);
+      var sub = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state){
+       if(state == BluetoothAdapterState.off)
+         {
+           FlutterBluePlus.turnOn();
+         }
+      });
       await FlutterBluePlus.adapterState.where((val) => val == BluetoothAdapterState.on).first;
+
       await FlutterBluePlus.startScan(
         androidLegacy: true,
         timeout: Duration(seconds: 15),
