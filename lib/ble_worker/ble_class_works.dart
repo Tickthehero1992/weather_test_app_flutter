@@ -12,7 +12,9 @@ class BLEWorker extends GetxController{
     bool connectGranted = await Permission.bluetoothConnect.request().isGranted;
     bool scanGranted = await Permission.bluetoothScan.request().isGranted;
     bool stateBle = false;
-    var sub = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state){
+    FlutterBluePlus.adapterState.listen((BluetoothAdapterState state){
+
+      print(state);
       if(state == BluetoothAdapterState.on)
         {
           stateBle = true;
@@ -23,9 +25,11 @@ class BLEWorker extends GetxController{
 
         }
 
-    });
+    },
+      onDone: () => {print("ready!")},
+    );
 
-    sub.cancel();
+
     if(stateBle)
       {
         if(scanGranted && connectGranted)
@@ -38,7 +42,7 @@ class BLEWorker extends GetxController{
           },
               onError: (e)=> print(e)
           );
-          FlutterBluePlus.cancelWhenScanComplete(subscription);
+          //FlutterBluePlus.cancelWhenScanComplete(subscription);
         }
         else
         {
