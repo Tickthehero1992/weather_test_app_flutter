@@ -7,26 +7,51 @@ import 'package:permission_handler/permission_handler.dart';
 
 class BLEWorker extends GetxController{
 
-  Stream <List<ScanResult>> stream = Stream.empty();
+  //Stream <List<ScanResult>> stream = Stream.empty();
   Future scanDevices() async{
-    if(await Permission.bluetoothConnect.request().isGranted)
+    bool connectGranted = await Permission.bluetoothConnect.request().isGranted;
+    bool scanGranted = await Permission.bluetoothScan.request().isGranted;
+    bool stateBle = false;
+    var sub = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state){
+      if(state == BluetoothAdapterState.on)
+        {
+          stateBle = true;
+        }
+      else
+        {
+          stateBle = false;
+
+        }
+
+    });
+
+    sub.cancel();
+    if(stateBle)
       {
-        print("Connect Granted!");
+        if(scanGranted && connectGranted)
+        {
+          var subscription = FlutterBluePlus.onScanResults.listen((results){
+            if(results.isNotEmpty){
+              ScanResult r = results.last;
+              print('${r.device.remoteId}');
+            }
+          },
+              onError: (e)=> print(e)
+          );
+          FlutterBluePlus.cancelWhenScanComplete(subscription);
+        }
+        else
+        {
+          print("No access");
+        }
       }
-    if(await Permission.bluetoothScan.request().isGranted)
+    else
       {
-        print("Scan Granted!");
+        print("Need turn on Ble");
+        await FlutterBluePlus.turnOn();
       }
-    // var subscription = FlutterBluePlus.onScanResults.listen((results){
-    //   if(results.isNotEmpty){
-    //     ScanResult r = results.last;
-    //
-    //     // stream.results.last;
-    //     print('${r.device.remoteId}');
-    //   }
-    // },
-    // onError: (e)=> print(e)
-    // );
+
+
   }
 
 
