@@ -18,8 +18,7 @@ class BLEWorker extends GetxController{
       var subscription = FlutterBluePlus.onScanResults.listen((results){
         if(results.isNotEmpty){
           ScanResult r = results.last;
-          print("results:");
-          print('${r.advertisementData.advName}');
+          print('found: ${r.advertisementData.advName} ${r.device.remoteId}');
         }
         else
           {
