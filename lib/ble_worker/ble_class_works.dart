@@ -1,10 +1,36 @@
+import 'dart:async';
+
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class BLEWorker {
 
-  BluetoothAdapterState state = BluetoothAdapterState.off;
+class BLEWorker extends GetxController{
+
+  Stream <List<ScanResult>> stream = Stream.empty();
+  Future scanDevices() async{
+    if(await Permission.bluetoothConnect.request().isGranted)
+      {
+        print("Connect Granted!");
+      }
+    if(await Permission.bluetoothScan.request().isGranted)
+      {
+        print("Scan Granted!");
+      }
+    // var subscription = FlutterBluePlus.onScanResults.listen((results){
+    //   if(results.isNotEmpty){
+    //     ScanResult r = results.last;
+    //
+    //     // stream.results.last;
+    //     print('${r.device.remoteId}');
+    //   }
+    // },
+    // onError: (e)=> print(e)
+    // );
+  }
+
+
+/*  BluetoothAdapterState state = BluetoothAdapterState.off;
 
   void initBle() async{
     print("Start listen");
@@ -29,6 +55,5 @@ class BLEWorker {
   }
 
   Future<void> scan() async{
-
-  }
+  }*/
 }
