@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 import 'weather_page.dart';
 import 'ble_worker/ble_class_works.dart';
@@ -68,31 +69,31 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // StreamBuilder<List<ScanResult>>(
-                  //     stream: controller.scanResults,
-                  //     builder: (context, snapshot) {
-                  //       if (snapshot.hasData) {
-                  //         return Expanded(
-                  //           child: ListView.builder(
-                  //               shrinkWrap: true,
-                  //               itemCount: snapshot.data!.length,
-                  //               itemBuilder: (context, index) {
-                  //                 final data = snapshot.data![index];
-                  //                 return Card(
-                  //                   elevation: 2,
-                  //                   child: ListTile(
-                  //                     title: Text(data.device.name),
-                  //                     subtitle: Text(data.device.id.id),
-                  //                     trailing: Text(data.rssi.toString()),
-                  //                     onTap: ()=> controller.connectToDevice(data.device),
-                  //                   ),
-                  //                 );
-                  //               }),
-                  //         );
-                  //       }else{
-                  //         return Center(child: Text("No Device Found"),);
-                  //       }
-                  //     }),
+                  StreamBuilder<List<ScanResult>>(
+                      stream: FlutterBluePlus.scanResults,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Expanded(
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  final data = snapshot.data![index];
+                                  return Card(
+                                    elevation: 2,
+                                    child: ListTile(
+                                      title: Text(data.device.name),
+                                      subtitle: Text(data.device.id.id),
+                                      trailing: Text(data.rssi.toString()),
+                                      //onTap: ()=> controller.connectToDevice(data.device),
+                                    ),
+                                  );
+                                }),
+                          );
+                        }else{
+                          return Center(child: Text("No Device Found"),);
+                        }
+                      }),
                   SizedBox(height: 10,),
                   ElevatedButton(onPressed: ()  async {
                     controller.scanDevices();
