@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'weather_page.dart';
+import 'ble_worker/ble_class_works.dart';
 
 void main() {
+  BLEWorker ble = BLEWorker();
+  ble.initBle();
   runApp(const MyApp());
 }
 
@@ -20,7 +23,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
         ),
-          home: const WeatherPage(),
+         // home: const WeatherPage(),
 
     );
   }

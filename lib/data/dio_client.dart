@@ -4,8 +4,6 @@ import 'package:test_project/interceptions/auth_interceptor.dart';
 class DioClient
 {
   static const String _weatherUrl = "https://api.weather.yandex.ru";
-  final lat = 56.266687;
-  final lon = 37.564142;
 
   DioClient(){
     addInterceptor(LogInterceptor());
