@@ -14,7 +14,7 @@ class BLEWorker {
         if(state == BluetoothAdapterState.on)
           {
             print("Turn ON!");
-             FlutterBluePlus.turnOn();
+            FlutterBluePlus.turnOn();
           }
       },
         onError: (e) => print(e),
