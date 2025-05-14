@@ -65,11 +65,23 @@ class _MyHomePageState extends State<MyHomePage> {
           init: BLEWorker(),
           builder: (BLEWorker controller)
           {
+
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  FutureBuilder<String> (
+                    future: controller.firstConnection(),
+                    builder: (context, snapshot){
+                      if (snapshot.hasData) {
+                        return Text(snapshot.data!);
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    },
+                  ),
                   StreamBuilder<List<ScanResult>>(
+                      
                       stream: FlutterBluePlus.scanResults,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -105,6 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
             );
           },
         )
+
     );
   }
 }

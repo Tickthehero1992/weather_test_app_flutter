@@ -28,9 +28,11 @@ class BLEWorker extends GetxController{
         {
           await devicePair!.connect(autoConnect: true);
           await devicePair!.connectionState.where((val) => val == BluetoothConnectionState.connected).first;
+          print("Here device!");
           return devicePair!.advName.toString();
         }
       }
+    print("Here no device");
     return "No saved Device";
 }
 
@@ -85,6 +87,7 @@ class BLEWorker extends GetxController{
    device.cancelWhenDisconnected(subscribe, delayed: true, next:true);
    await device.connect(autoConnect: true, timeout:Duration(seconds: 15));
    await File(fileInfo).writeAsString(device.remoteId.str);
+
 
    subscribe.cancel();
   }
