@@ -44,4 +44,17 @@ class BLEWorker extends GetxController{
       await FlutterBluePlus.isScanning.where((val) => val == false).first;
     }
   }
+
+  Future connectToDevice(BluetoothDevice device) async{
+
+   var subscribe =  device.connectionState.listen((isConnected){
+     if(isConnected == BluetoothConnectionState.disconnected)
+       {
+         device.connect(timeout:Duration(seconds: 15));
+       }
+    });
+   device.cancelWhenDisconnected(subscribe, delayed: true, next:true);
+   await device.connect(timeout:Duration(seconds: 15));
+   subscribe.cancel();
+  }
 }
