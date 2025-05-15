@@ -32,6 +32,8 @@ class MyApp extends StatelessWidget {
 */
 
 
+
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -54,6 +56,57 @@ class MyHomePage extends StatefulWidget {
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
+}
+
+
+class SecondRoute extends StatelessWidget {
+  SecondRoute({super.key, required BLEWorker this.controller});
+
+  late BLEWorker controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate back to first route when tapped.
+                  Navigator.pop(context);
+                },
+                child: const Text('Go back!'),
+              ),
+                   StreamBuilder<String>(
+                      stream: controller.characteristicController.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Expanded(
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  final data = snapshot.data![index];
+                                  return Card(
+                                    elevation: 2,
+                                    child: ListTile(
+                                      title: Text(data),
+                                      subtitle: Text(data),
+                                      trailing: Text(data),
+
+                                    ),
+                                  );
+                                }),
+                          );
+                        }else{
+                          return Center(child: Text("No Device Found"),);
+                        }
+                      }),
+            ]
+        )
+      );
+
+  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -85,7 +138,19 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
                       if(snapshot.hasData)
                         {
-                          return Text(snapshot.data!.advName.toString());
+                          //return Text(snapshot.data!.advName.toString());
+                          return Center(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>  SecondRoute(controller: controller)),
+                                  );// Navigate back to first route when tapped.
+                                },
+                                child:  Text(snapshot.data!.advName.toString()),
+                              ),
+                            );
+
                         }
                       else
                         {
