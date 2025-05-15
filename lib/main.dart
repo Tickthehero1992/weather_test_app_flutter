@@ -70,16 +70,30 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FutureBuilder<String> (
-                    future: controller.firstConnection(),
-                    builder: (context, snapshot){
-                      if (snapshot.hasData) {
-                        return Text(snapshot.data!);
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
+
+                  StreamBuilder<BluetoothDevice>(
+                    stream: controller.deviceController.stream,
+                    builder: (context, snapshot)
+                    {
+                      if(snapshot.connectionState == ConnectionState.waiting)
+                        {
+                          return Text("Waiting");
+                        }
+                      if(snapshot.hasError)
+                        {
+                          return Text("Error!");
+                        }
+                      if(snapshot.hasData)
+                        {
+                          return Text(snapshot.data!.advName.toString());
+                        }
+                      else
+                        {
+                          return Center(child: Text("No Device Found"),);
+                        }
                     },
                   ),
+
                   StreamBuilder<List<ScanResult>>(
                       
                       stream: FlutterBluePlus.scanResults,
