@@ -22,7 +22,8 @@ class BLEWorker extends GetxController{
   @override
   void initState() {
 
-    sub = deviceController.stream.listen((item) => print(item));
+    sub = deviceController.stream.listen((item){}
+    );
 
   }
 
@@ -69,7 +70,6 @@ class BLEWorker extends GetxController{
   }
 
   Future connectToDevice(BluetoothDevice device) async{
-
    var subscribe =  device.connectionState.listen((isConnected){
      if(isConnected == BluetoothConnectionState.disconnected)
        {
@@ -82,11 +82,31 @@ class BLEWorker extends GetxController{
          print(device.advName.toString());
          connectedDevice = true;
          deviceController.add(device);
-        // devicePair = device;
+         devicePair = device;
+
        }
     });
-   //device.cancelWhenDisconnected(subscribe, delayed: true, next:true);
+   device.cancelWhenDisconnected(subscribe, delayed: true, next:true);
    await device.connect( timeout:Duration(seconds: 15));
+   await characteristicRead();
    //subscribe.cancel();
   }
+
+  Future characteristicRead() async
+  {
+    if(devicePair.isConnected)
+      {
+        List<BluetoothService> services = await devicePair.discoverServices();
+        services.forEach((service) async {
+          for(BluetoothCharacteristic c in service.characteristics)
+            {
+              if(c.properties.read){
+                List<int> value = await c.read();
+                print("Characteristic: ${value}");
+              }
+            }
+        });
+      }
+  }
+
 }
