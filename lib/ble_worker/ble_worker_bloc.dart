@@ -13,9 +13,7 @@ part 'ble_worker_state.dart';
 class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
 
   BleWorkerBloc() : super(BleWorkerInitial()) {
-    on<BleWorkerEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<BleWorkerEvent>(onBleFetchEvent);
   }
   bool readyToBle = false;
 
@@ -33,9 +31,9 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
     on<BleScanEvent> ((event, emit)
     async {
       print("HERE");
+      emit(BleWorkerScan());
       if(readyToBle)
         {
-          emit(BleWorkerScan());
           var subscription = FlutterBluePlus.onScanResults.listen((results){
           },
           onError: (error) => emit(BleWorkerScanError(error: error)),
@@ -48,7 +46,6 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
           );
           await FlutterBluePlus.isScanning.where((val) => val == false).first;
         }
-
     });
 
     on<BleConnectEvent>((event, emit)
@@ -67,7 +64,7 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
       emit(BleWorkerGetCharacteristics());
     });
 
-    emit(BleWorkerInitial());
+
     await checkPermissions().then((value) async{
       if (value) {
 

@@ -6,26 +6,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'ble_worker_bloc.dart';
 
 
-
 class BleWorkerPage extends StatelessWidget
 {
   const BleWorkerPage({super.key});
 
+
   @override
   Widget build(BuildContext context) {
+    BleWorkerBloc bleBloc = BleWorkerBloc();
     return Scaffold(
         body: Center(
             child: BlocBuilder(
-                bloc: BleWorkerBloc()..add((BleWorkerFetchEvent())),
+                bloc: bleBloc..add(BleWorkerFetchEvent()),
                 builder: (context, state){
                   switch (state.runtimeType)
                   {
                     case BleWorkerInitial:
+
+                        return Center(
+                          child: Text("Init state")
+                        );
                     case BleWorkerInitialSuccess:
                       return  Center(
                           child: ElevatedButton(onPressed: ()  async {
-                            context.read<BleWorkerBloc>().add(BleScanEvent());
-
+                            print("Button Pressed");
+                            bleBloc.add(BleScanEvent());
                           }, child: Text("SCAN")),
                       );
                     case BleWorkerInitialError:
@@ -33,6 +38,7 @@ class BleWorkerPage extends StatelessWidget
                       return Center(
                         child:Text("Error $error")
                       );
+                    case BleWorkerScan:
                     case BleWorkerScanSuccess:
                       return Center(
                           child: Column(
