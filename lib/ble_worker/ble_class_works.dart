@@ -15,7 +15,7 @@ class BLEWorker extends GetxController{
   String deviceId = "";
 
   var deviceController = StreamController<BluetoothDevice>();
-  var characteristicController = StreamController<String>();
+  var characteristicController = StreamController<List<String>>();
 
   BluetoothDevice devicePair = BluetoothDevice.fromId("12345");
   late StreamSubscription sub;
@@ -23,6 +23,7 @@ class BLEWorker extends GetxController{
 
   @override
   void initState() {
+
 
     sub = deviceController.stream.listen((item){}
     );
@@ -101,6 +102,7 @@ class BLEWorker extends GetxController{
       {
         List<BluetoothService> services = await devicePair.discoverServices();
         services.forEach((service) async {
+          List<String> llst = [];
           for(BluetoothCharacteristic c in service.characteristics)
             {
               if(c.properties.read){
@@ -111,9 +113,12 @@ class BLEWorker extends GetxController{
                   {
                     st += String.fromCharCode(num);
                   }
-                characteristicController.add(st);
+
                 print("Characteristic: ${st}");
+                llst.add(st);
               }
+
+              characteristicController.add(llst);
             }
         });
       }

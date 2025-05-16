@@ -6,7 +6,6 @@ import 'ble_worker/ble_class_works.dart';
 import 'package:get/get.dart';
 
 void main() {
-  BLEWorker ble = BLEWorker();
   runApp(const MyApp());
 }
 /*
@@ -77,7 +76,7 @@ class SecondRoute extends StatelessWidget {
                 },
                 child: const Text('Go back!'),
               ),
-                   StreamBuilder<String>(
+                   StreamBuilder<List<String>>(
                       stream: controller.characteristicController.stream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
