@@ -32,6 +32,7 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
 
     on<BleScanEvent> ((event, emit)
     async {
+      print("HERE");
       if(readyToBle)
         {
           emit(BleWorkerScan());
@@ -79,6 +80,7 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
           {
             emit(BleWorkerInitialSuccess());
             readyToBle = true;
+
           }
         });
         await FlutterBluePlus.adapterState.where((val) => val == BluetoothAdapterState.on).first;

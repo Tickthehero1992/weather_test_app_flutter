@@ -9,7 +9,7 @@ final class BleWorkerInitialSuccess extends BleWorkerState{}
 
 final class BleWorkerInitialError extends BleWorkerState
 {
-  late String errorInfo;
+  late final String errorInfo;
   BleWorkerInitialError({required this.errorInfo});
 }
 
