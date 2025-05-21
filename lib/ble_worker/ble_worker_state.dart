@@ -29,6 +29,11 @@ final class BleWorkerConnect extends BleWorkerState{}
 
 final class BleWorkerConnectSuccess extends BleWorkerState{}
 
+final class BleWorkerConnectError extends BleWorkerState{
+  late String error;
+  BleWorkerConnectError({required this.error});
+}
+
 final class BleWorkerGetCharacteristics extends BleWorkerState{}
 
 final class BleWorkerGetCharacteristicsSuccess extends BleWorkerState{}

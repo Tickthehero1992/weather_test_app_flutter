@@ -64,6 +64,7 @@ class BleWorkerPage extends StatelessWidget
                                           title: Text(data.device.advName.toString()),
                                           subtitle: Text(data.device.remoteId.str),
                                           trailing: Text(data.rssi.toString()),
+                                          onTap: () => bleBloc.add(BleConnectEvent(data.device)),
                                         ),
                                       );
                                     }),
@@ -83,6 +84,53 @@ class BleWorkerPage extends StatelessWidget
                       String err = (state as BleWorkerScanError).error;
                       return Center(
                         child: Text("Error $err")
+                      );
+                    case BleWorkerConnectSuccess:
+                      return  Center(
+                        child: ElevatedButton(onPressed: () {
+                          print("Button Pressed");
+                          bleBloc.add(BleReadCharacteristicEvent());
+                        }, child: Text("Read Characteristics")),
+                      );
+                    case BleWorkerGetCharacteristicsSuccess:
+                      return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              StreamBuilder<List<String>>(
+                                  stream: bleBloc.characteristicController.stream,
+                                  builder: (context, snapshot) {
+                                    if(snapshot.hasError)
+                                    {
+                                      return Text("Error!");
+                                    }
+                                    if (snapshot.hasData) {
+                                      return Expanded(
+                                        child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: snapshot.data!.length,
+                                            itemBuilder: (context, index) {
+                                              final data = snapshot.data![index];
+                                              return Card(
+                                                elevation: 2,
+                                                child: ListTile(
+                                                  title: Text(data.toString()),
+                                                  subtitle: Text("Characteristic"),
+                                                  trailing: Text(data.toString()),
+                                                  //onTap: () => bleBloc.add(BleConnectEvent(data.device)),
+                                                ),
+                                              );
+                                            }),
+                                      );
+                                    }else{
+                                      return  Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                  }
+                              )
+                            ],
+                          )
                       );
 
                     default :

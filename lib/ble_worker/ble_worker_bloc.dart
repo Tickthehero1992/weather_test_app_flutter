@@ -12,10 +12,16 @@ part 'ble_worker_state.dart';
 
 class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
 
+  late  BluetoothDevice devicePair;
+  var characteristicController = StreamController<List<String>>();
+  late StreamSubscription charSub;
+
   BleWorkerBloc() : super(BleWorkerInitial()) {
+
     on<BleInitEvent>(onBleFetchEvent);
     on<BleScanEvent>(onBleScanEvent);
-
+    on<BleConnectEvent>(onBleConnectEvent);
+    on<BleReadCharacteristicEvent>(onBleReadCharacteristicEvent);
 
   }
   bool readyToBle = false;
@@ -30,7 +36,6 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
 
 FutureOr<void> onBleScanEvent(BleWorkerEvent event,
       Emitter <BleWorkerState> emit) async{
-  print("HERE");
   emit(BleWorkerScan());
   if(readyToBle)
   {
@@ -49,27 +54,59 @@ FutureOr<void> onBleScanEvent(BleWorkerEvent event,
   }
 }
 
-  FutureOr<void> onBleFetchEvent(BleWorkerEvent event,
-      Emitter <BleWorkerState> emit) async{
-
-
-    on<BleConnectEvent>((event, emit)
-    async
+FutureOr<void> onBleConnectEvent(BleConnectEvent event,
+    Emitter <BleWorkerState> emit)  async{
+    BluetoothDevice device = event.device;
+  var subscribe =  device.connectionState.listen((isConnected){
+    if(isConnected == BluetoothConnectionState.disconnected)
     {
-      if(readyToBle && await FlutterBluePlus.scanResults.isEmpty.then((val) =>  val))
-        {
-          emit(BleWorkerConnect());
+      print("${device.disconnectReason?.code} ${device.disconnectReason?.description}");
+      device.connect(timeout:Duration(seconds: 15));
+    }
+    else
+    {
+      print("device connected!");
+      print(device.advName.toString());
+      devicePair = device;
+      emit(BleWorkerConnectSuccess());
+    }
 
+  },
+      onError: (error) => emit(BleWorkerConnectError(error: error)),
+
+  );
+  device.cancelWhenDisconnected(subscribe, delayed: true, next:true);
+  await device.connect( timeout:Duration(seconds: 15));
+}
+
+FutureOr<void> onBleReadCharacteristicEvent(BleWorkerEvent event,
+      Emitter <BleWorkerState> emit) async{
+  List<BluetoothService> services = await devicePair.discoverServices();
+  services.forEach((service) async {
+    List<String> llst = [];
+    for(BluetoothCharacteristic c in service.characteristics)
+    {
+      if(c.properties.read){
+        List<int> value = await c.read();
+        // print("Characteristic: ${value}");
+        String st = "";
+        for(int num in value)
+        {
+          st += String.fromCharCode(num);
         }
 
-    });
+        print("Characteristic: ${st}");
+        llst.add(st);
+      }
 
-    on<BleReadCharacteristicEvent>((event, emit)
-    {
-      emit(BleWorkerGetCharacteristics());
-    });
+      characteristicController.add(llst);
+      emit(BleWorkerGetCharacteristicsSuccess());
+    }
+  });
+}
 
-
+  FutureOr<void> onBleFetchEvent(BleWorkerEvent event,
+      Emitter <BleWorkerState> emit) async{
     await checkPermissions().then((value) async{
       if (value) {
 
@@ -82,7 +119,6 @@ FutureOr<void> onBleScanEvent(BleWorkerEvent event,
           {
             emit(BleWorkerInitialSuccess());
             readyToBle = true;
-
           }
         });
         await FlutterBluePlus.adapterState.where((val) => val == BluetoothAdapterState.on).first;

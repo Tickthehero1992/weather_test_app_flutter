@@ -9,7 +9,10 @@ class BleInitEvent extends BleWorkerEvent{}
 
 class BleScanEvent extends BleWorkerEvent{}
 
-class BleConnectEvent extends BleWorkerEvent{}
+class BleConnectEvent extends BleWorkerEvent{
+  late BluetoothDevice device;
+  BleConnectEvent(this.device);
+}
 
 class BleReadCharacteristicEvent extends BleWorkerEvent{}
 
