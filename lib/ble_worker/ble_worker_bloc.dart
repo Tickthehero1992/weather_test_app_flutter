@@ -13,7 +13,10 @@ part 'ble_worker_state.dart';
 class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
 
   BleWorkerBloc() : super(BleWorkerInitial()) {
-    on<BleWorkerEvent>(onBleFetchEvent);
+    on<BleInitEvent>(onBleFetchEvent);
+    on<BleScanEvent>(onBleScanEvent);
+
+
   }
   bool readyToBle = false;
 
@@ -25,28 +28,30 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
     return (connectGranted && scanGranted && advertiseGranted);
   }
 
+FutureOr<void> onBleScanEvent(BleWorkerEvent event,
+      Emitter <BleWorkerState> emit) async{
+  print("HERE");
+  emit(BleWorkerScan());
+  if(readyToBle)
+  {
+    var subscription = FlutterBluePlus.onScanResults.listen((results){
+    },
+      onError: (error) => emit(BleWorkerScanError(error: error)),
+      onDone:() => emit(BleWorkerScanSuccess()),
+    );
+    FlutterBluePlus.cancelWhenScanComplete(subscription);
+    await FlutterBluePlus.startScan(
+      androidLegacy: true,
+      timeout: Duration(seconds: 15),
+    );
+    await FlutterBluePlus.isScanning.where((val) => val == false).first;
+
+  }
+}
+
   FutureOr<void> onBleFetchEvent(BleWorkerEvent event,
       Emitter <BleWorkerState> emit) async{
 
-    on<BleScanEvent> ((event, emit)
-    async {
-      print("HERE");
-      emit(BleWorkerScan());
-      if(readyToBle)
-        {
-          var subscription = FlutterBluePlus.onScanResults.listen((results){
-          },
-          onError: (error) => emit(BleWorkerScanError(error: error)),
-            onDone:() => emit(BleWorkerScanSuccess()),
-          );
-          FlutterBluePlus.cancelWhenScanComplete(subscription);
-          await FlutterBluePlus.startScan(
-            androidLegacy: true,
-            timeout: Duration(seconds: 15),
-          );
-          await FlutterBluePlus.isScanning.where((val) => val == false).first;
-        }
-    });
 
     on<BleConnectEvent>((event, emit)
     async

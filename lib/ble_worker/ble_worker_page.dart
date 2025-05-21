@@ -17,18 +17,18 @@ class BleWorkerPage extends StatelessWidget
     return Scaffold(
         body: Center(
             child: BlocBuilder(
-                bloc: bleBloc..add(BleWorkerFetchEvent()),
+                bloc: bleBloc,
                 builder: (context, state){
                   switch (state.runtimeType)
                   {
                     case BleWorkerInitial:
-
+                       bleBloc.add(BleInitEvent());
                         return Center(
                           child: Text("Init state")
                         );
                     case BleWorkerInitialSuccess:
                       return  Center(
-                          child: ElevatedButton(onPressed: ()  async {
+                          child: ElevatedButton(onPressed: () {
                             print("Button Pressed");
                             bleBloc.add(BleScanEvent());
                           }, child: Text("SCAN")),
