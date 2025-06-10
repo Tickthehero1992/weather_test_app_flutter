@@ -1,7 +1,10 @@
+import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'dart:async';
 import "dart:io";
+import "dart:convert";
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get/get.dart';
@@ -22,6 +25,7 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
     on<BleScanEvent>(onBleScanEvent);
     on<BleConnectEvent>(onBleConnectEvent);
     on<BleReadCharacteristicEvent>(onBleReadCharacteristicEvent);
+    on<BleWriteCharacteristicEvent>(onBleWriteCharacteristicEvent);
 
   }
   bool readyToBle = false;
@@ -104,6 +108,18 @@ FutureOr<void> onBleReadCharacteristicEvent(BleWorkerEvent event,
     }
   });
 }
+
+  FutureOr<void> onBleWriteCharacteristicEvent(BleWriteCharacteristicEvent event,
+      Emitter <BleWorkerState> emit) async {
+    List<BluetoothService> services = await devicePair.discoverServices();
+    services.forEach((service) async{
+      BluetoothCharacteristic characteristic = service.characteristics.firstWhere((element) => element.characteristicUuid == event.characteristicUuid);
+      List<int> llInfo = utf8.encode(event.parameter);
+      Uint8List bytesOut = Uint8List.fromList(llInfo);
+      await characteristic.setNotifyValue(true);
+      await characteristic.write(llInfo);
+    });
+  }
 
   FutureOr<void> onBleFetchEvent(BleWorkerEvent event,
       Emitter <BleWorkerState> emit) async{
