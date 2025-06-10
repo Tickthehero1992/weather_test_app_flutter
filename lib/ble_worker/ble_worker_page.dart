@@ -97,7 +97,7 @@ class BleWorkerPage extends StatelessWidget
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              StreamBuilder<List<String>>(
+                              StreamBuilder<List<BluetoothCharacteristicWithParam>>(
                                   stream: bleBloc.characteristicController.stream,
                                   builder: (context, snapshot) {
                                     if(snapshot.hasError)
@@ -114,9 +114,9 @@ class BleWorkerPage extends StatelessWidget
                                               return Card(
                                                 elevation: 2,
                                                 child: ListTile(
-                                                  title: Text(data.toString()),
-                                                  subtitle: Text("Characteristic"),
-                                                  trailing: Text(data.toString()),
+                                                  title: Text(data.characteristicUuid.toString()),
+                                                  subtitle: Text(data.parameter.toString()),
+                                                  trailing: Text(data.remoteId.toString()),
                                                   //onTap: () => bleBloc.add(BleConnectEvent(data.device)),
                                                 ),
                                               );

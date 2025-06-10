@@ -1,4 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -13,10 +12,16 @@ import 'package:permission_handler/permission_handler.dart';
 part 'ble_worker_event.dart';
 part 'ble_worker_state.dart';
 
+class BluetoothCharacteristicWithParam extends BluetoothCharacteristic
+{
+  late final String parameter;
+  BluetoothCharacteristicWithParam({required super.remoteId, required super.serviceUuid, required super.characteristicUuid, required this.parameter});
+}
+
 class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
 
   late  BluetoothDevice devicePair;
-  var characteristicController = StreamController<List<String>>();
+  var characteristicController = StreamController<List<BluetoothCharacteristicWithParam>>();
   late StreamSubscription charSub;
 
   BleWorkerBloc() : super(BleWorkerInitial()) {
@@ -86,28 +91,32 @@ FutureOr<void> onBleConnectEvent(BleConnectEvent event,
 FutureOr<void> onBleReadCharacteristicEvent(BleWorkerEvent event,
       Emitter <BleWorkerState> emit) async{
   List<BluetoothService> services = await devicePair.discoverServices();
-  services.forEach((service) async {
-    List<String> llst = [];
-    for(BluetoothCharacteristic c in service.characteristics)
+  List<BluetoothCharacteristicWithParam> llst = [];
+  for (BluetoothService service in services)
     {
-      if(c.properties.read){
-        List<int> value = await c.read();
-        // print("Characteristic: ${value}");
-        String st = "";
-        for(int num in value)
-        {
-          st += String.fromCharCode(num);
+      for(BluetoothCharacteristic c in service.characteristics)
+      {
+
+        if(c.properties.read){
+          List<int> value = await c.read();
+          // print("Characteristic: ${value}");
+          String st = "";
+          for(int num in value)
+          {
+            st += String.fromCharCode(num);
+          }
+
+          print("Characteristic: ${st}");
+          BluetoothCharacteristicWithParam charact = BluetoothCharacteristicWithParam(remoteId:  c.remoteId, serviceUuid: c.serviceUuid,
+              characteristicUuid: c.characteristicUuid, parameter: st);
+          llst.add(charact);
         }
-
-        print("Characteristic: ${st}");
-        llst.add(st);
       }
-
-      characteristicController.add(llst);
-      emit(BleWorkerGetCharacteristicsSuccess());
     }
-  });
+  characteristicController.add(llst);
+  emit(BleWorkerGetCharacteristicsSuccess());
 }
+
 
   FutureOr<void> onBleWriteCharacteristicEvent(BleWriteCharacteristicEvent event,
       Emitter <BleWorkerState> emit) async {
@@ -115,7 +124,7 @@ FutureOr<void> onBleReadCharacteristicEvent(BleWorkerEvent event,
     services.forEach((service) async{
       BluetoothCharacteristic characteristic = service.characteristics.firstWhere((element) => element.characteristicUuid == event.characteristicUuid);
       List<int> llInfo = utf8.encode(event.parameter);
-      Uint8List bytesOut = Uint8List.fromList(llInfo);
+      //Uint8List bytesOut = Uint8List.fromList(llInfo);
       await characteristic.setNotifyValue(true);
       await characteristic.write(llInfo);
     });
