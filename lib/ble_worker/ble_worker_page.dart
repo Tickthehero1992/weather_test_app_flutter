@@ -117,7 +117,7 @@ class BleWorkerPage extends StatelessWidget
                                                   title: Text(data.characteristicUuid.toString()),
                                                   subtitle: Text(data.parameter.toString()),
                                                   trailing: Text(data.remoteId.toString()),
-                                                  //onTap: () => bleBloc.add(BleConnectEvent(data.device)),
+                                                  onTap: () => bleBloc.add(BleWaitWriteCharacteristicEvent(data.characteristicUuid)),
                                                 ),
                                               );
                                             }),
@@ -131,6 +131,21 @@ class BleWorkerPage extends StatelessWidget
                               )
                             ],
                           )
+                      );
+                    case BleWorkerWaitWriteCharacteristic:
+                      Guid guid = (state as BleWorkerWaitWriteCharacteristic).characteristicUuid;
+                      return Center(
+                        child:TextField(
+
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Введите значение",
+                            helperText: "Введите значение параметра характеристики"
+                          ),
+                          onSubmitted: (text){
+                            bleBloc.add(BleWriteCharacteristicEvent(guid, text));
+                          },
+                        )
                       );
 
                     default :

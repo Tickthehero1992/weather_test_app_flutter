@@ -38,6 +38,11 @@ final class BleWorkerGetCharacteristics extends BleWorkerState{}
 
 final class BleWorkerGetCharacteristicsSuccess extends BleWorkerState{}
 
+final class  BleWorkerWaitWriteCharacteristic extends BleWorkerState{
+  late Guid characteristicUuid;
+  BleWorkerWaitWriteCharacteristic({required this.characteristicUuid});
+}
+
 final class BleWorkerWriteCharacteristics extends BleWorkerState{
   late Guid characteristicUuid;
   late String parameterIn;

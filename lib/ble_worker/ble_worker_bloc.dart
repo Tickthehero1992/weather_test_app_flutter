@@ -30,6 +30,7 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
     on<BleScanEvent>(onBleScanEvent);
     on<BleConnectEvent>(onBleConnectEvent);
     on<BleReadCharacteristicEvent>(onBleReadCharacteristicEvent);
+    on<BleWaitWriteCharacteristicEvent>(onBleWaitWriteCharacteristicEvent);
     on<BleWriteCharacteristicEvent>(onBleWriteCharacteristicEvent);
 
   }
@@ -117,8 +118,13 @@ FutureOr<void> onBleReadCharacteristicEvent(BleWorkerEvent event,
   emit(BleWorkerGetCharacteristicsSuccess());
 }
 
+  FutureOr<void> onBleWaitWriteCharacteristicEvent(BleWaitWriteCharacteristicEvent event,
+      Emitter <BleWorkerState> emit) async
+  {
+    emit(BleWorkerWaitWriteCharacteristic(characteristicUuid: event.characteristicUuid));
+  }
 
-  FutureOr<void> onBleWriteCharacteristicEvent(BleWriteCharacteristicEvent event,
+FutureOr<void> onBleWriteCharacteristicEvent(BleWriteCharacteristicEvent event,
       Emitter <BleWorkerState> emit) async {
     List<BluetoothService> services = await devicePair.discoverServices();
     services.forEach((service) async{
