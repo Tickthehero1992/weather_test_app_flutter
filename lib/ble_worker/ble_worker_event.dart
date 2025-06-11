@@ -16,6 +16,8 @@ class BleConnectEvent extends BleWorkerEvent{
 
 class BleReadCharacteristicEvent extends BleWorkerEvent{}
 
+class BleReadCharacteristicSuccessEvent extends BleWorkerEvent{}
+
 class BleWaitWriteCharacteristicEvent extends BleWorkerEvent
 {
   late Guid characteristicUuid;

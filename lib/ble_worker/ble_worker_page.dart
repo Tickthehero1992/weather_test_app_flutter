@@ -147,7 +147,13 @@ class BleWorkerPage extends StatelessWidget
                           },
                         )
                       );
+                    case BleWorkerWriteCharacteristicsSuccess:
+                      bleBloc.add(BleReadCharacteristicSuccessEvent());
 
+                      return  Center(
+                        child: CircularProgressIndicator(),
+
+                      );
                     default :
                       return Container();
                   }
