@@ -105,7 +105,8 @@ class BleWorkerPage extends StatelessWidget
                                       return Text("Error!");
                                     }
                                     if (snapshot.hasData) {
-                                      return Expanded(
+
+                                    return Expanded(
                                         child: ListView.builder(
                                             shrinkWrap: true,
                                             itemCount: snapshot.data!.length,
@@ -117,17 +118,22 @@ class BleWorkerPage extends StatelessWidget
                                                   title: Text(data.characteristicUuid.toString()),
                                                   subtitle: Text(data.parameter.toString()),
                                                   trailing: Text(data.remoteId.toString()),
-                                                  onTap: () => bleBloc.add(BleWaitWriteCharacteristicEvent(data.characteristicUuid)),
+                                                  onTap: () => {bleBloc.add(BleWaitWriteCharacteristicEvent(data.characteristicUuid))},
                                                 ),
                                               );
-                                            }),
+                                            },
+                                            ),
                                       );
-                                    }else{
+                                    }
+                                    else{
+
                                       return  Center(
                                         child: CircularProgressIndicator(),
                                       );
                                     }
+
                                   }
+
                               )
                             ],
                           )
@@ -136,7 +142,6 @@ class BleWorkerPage extends StatelessWidget
                       Guid guid = (state as BleWorkerWaitWriteCharacteristic).characteristicUuid;
                       return Center(
                         child:TextField(
-
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Введите значение",
@@ -149,7 +154,6 @@ class BleWorkerPage extends StatelessWidget
                       );
                     case BleWorkerWriteCharacteristicsSuccess:
                       bleBloc.add(BleReadCharacteristicSuccessEvent());
-
                       return  Center(
                         child: CircularProgressIndicator(),
 
