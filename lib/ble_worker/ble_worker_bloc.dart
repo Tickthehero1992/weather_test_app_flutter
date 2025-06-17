@@ -23,6 +23,7 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
   late  BluetoothDevice devicePair;
   var characteristicController = StreamController<List<BluetoothCharacteristicWithParam>>();
   late StreamSubscription charSub;
+  late List<BluetoothCharacteristicWithParam> charParams;
 
   BleWorkerBloc() : super(BleWorkerInitial()) {
 
@@ -94,6 +95,12 @@ FutureOr<void> onBleReadCharacteristicEvent(BleWorkerEvent event,
       Emitter <BleWorkerState> emit) async{
   List<BluetoothService> services = await devicePair.discoverServices();
   List<BluetoothCharacteristicWithParam> llst = [];
+
+  charSub = characteristicController.stream.listen((data) =>() {
+    charParams = data;
+  });
+
+
   for (BluetoothService service in services)
     {
       for(BluetoothCharacteristic c in service.characteristics)
@@ -148,8 +155,6 @@ FutureOr<void> onBleWriteCharacteristicEvent(BleWriteCharacteristicEvent event,
         {
         }
       }
-
-
     emit(BleWorkerWriteCharacteristicsSuccess());
 
   }
