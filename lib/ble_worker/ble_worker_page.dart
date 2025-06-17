@@ -34,7 +34,7 @@ class _BleWorkerPageState extends State<BleWorkerPage>
                   if(state is BleWorkerWriteCharacteristicsSuccess)
                     {
                       Navigator.of(context).pop();
-                      bleBloc.add(BleReadCharacteristicSuccessEvent());
+                      bleBloc.add(BleReadCharacteristicEvent());
                     }
                   if(state is BleWorkerGetCharacteristicsSuccess)
                     {

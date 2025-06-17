@@ -35,6 +35,10 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
     on<BleWriteCharacteristicEvent>(onBleWriteCharacteristicEvent);
     on<BleReadCharacteristicSuccessEvent>(onBleReadCharacteristicSuccessEvent);
 
+    charSub = characteristicController.stream.listen((data){
+      charParams = data;
+    });
+
   }
   bool readyToBle = false;
 
@@ -96,9 +100,7 @@ FutureOr<void> onBleReadCharacteristicEvent(BleWorkerEvent event,
   List<BluetoothService> services = await devicePair.discoverServices();
   List<BluetoothCharacteristicWithParam> llst = [];
 
-  charSub = characteristicController.stream.listen((data) =>() {
-    charParams = data;
-  });
+
 
 
   for (BluetoothService service in services)
