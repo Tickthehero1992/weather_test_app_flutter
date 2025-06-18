@@ -21,6 +21,7 @@ class CharacteristicReadPage extends StatelessWidget
                 Expanded(
                     child: ElevatedButton(
                         onPressed: () {
+                          bleBloc.add(BleDisconnectEvent(bleBloc.devicePair));
                           bleBloc.add(BleScanEvent());
                         },
                         child: Text("Return to scan")

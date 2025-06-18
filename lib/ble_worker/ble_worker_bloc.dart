@@ -24,7 +24,6 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
   var characteristicController = StreamController<List<BluetoothCharacteristicWithParam>>();
   late StreamSubscription charSub;
   late List<BluetoothCharacteristicWithParam> charParams;
-  late List<ScanResult> scanedDevices;
 
   BleWorkerBloc() : super(BleWorkerInitial()) {
 
@@ -35,7 +34,7 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
     on<BleWaitWriteCharacteristicEvent>(onBleWaitWriteCharacteristicEvent);
     on<BleWriteCharacteristicEvent>(onBleWriteCharacteristicEvent);
     on<BleReadCharacteristicSuccessEvent>(onBleReadCharacteristicSuccessEvent);
-
+    on<BleDisconnectEvent>(onBleDisconnectEvent);
     charSub = characteristicController.stream.listen((data){
       charParams = data;
     });
@@ -57,7 +56,7 @@ FutureOr<void> onBleScanEvent(BleWorkerEvent event,
   if(readyToBle)
   {
     var subscription = FlutterBluePlus.onScanResults.listen((results){
-      scanedDevices = results;
+
     },
       onError: (error) => emit(BleWorkerScanError(error: error)),
       onDone:() => {
@@ -81,7 +80,7 @@ FutureOr<void> onBleConnectEvent(BleConnectEvent event,
     if(isConnected == BluetoothConnectionState.disconnected)
     {
       print("${device.disconnectReason?.code} ${device.disconnectReason?.description}");
-      device.connect(timeout:Duration(seconds: 15));
+      //device.connect(timeout:Duration(seconds: 15));
     }
     else
     {
@@ -168,6 +167,11 @@ FutureOr<void> onBleWriteCharacteristicEvent(BleWriteCharacteristicEvent event,
   FutureOr<void> onBleReadCharacteristicSuccessEvent(BleWorkerEvent event,
       Emitter <BleWorkerState> emit){
       emit(BleWorkerGetCharacteristicsSuccess());
+  }
+
+  FutureOr<void> onBleDisconnectEvent(BleDisconnectEvent event, Emitter <BleWorkerState> emit)
+  async {
+    await devicePair.disconnect();
   }
 
 

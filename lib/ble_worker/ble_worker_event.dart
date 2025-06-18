@@ -30,4 +30,9 @@ class BleWriteCharacteristicEvent extends BleWorkerEvent{
   BleWriteCharacteristicEvent(this.characteristicUuid, this.parameter);
 }
 
+class BleDisconnectEvent extends BleWorkerEvent
+{
+  late BluetoothDevice device;
+  BleDisconnectEvent(this.device);
+}
 
