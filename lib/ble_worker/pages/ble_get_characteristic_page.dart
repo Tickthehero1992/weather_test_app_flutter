@@ -18,6 +18,14 @@ class CharacteristicReadPage extends StatelessWidget
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Expanded(
+                    child: ElevatedButton(
+                        onPressed: () {
+                          bleBloc.add(BleScanEvent());
+                        },
+                        child: Text("Return to scan")
+                    )
+                ),
                 ListView.builder(
                     shrinkWrap: true,
                   itemCount: bleBloc.charParams.length,

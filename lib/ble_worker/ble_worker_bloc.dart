@@ -24,6 +24,7 @@ class BleWorkerBloc extends Bloc<BleWorkerEvent, BleWorkerState> {
   var characteristicController = StreamController<List<BluetoothCharacteristicWithParam>>();
   late StreamSubscription charSub;
   late List<BluetoothCharacteristicWithParam> charParams;
+  late List<ScanResult> scanedDevices;
 
   BleWorkerBloc() : super(BleWorkerInitial()) {
 
@@ -56,9 +57,12 @@ FutureOr<void> onBleScanEvent(BleWorkerEvent event,
   if(readyToBle)
   {
     var subscription = FlutterBluePlus.onScanResults.listen((results){
+      scanedDevices = results;
     },
       onError: (error) => emit(BleWorkerScanError(error: error)),
-      onDone:() => emit(BleWorkerScanSuccess()),
+      onDone:() => {
+        emit(BleWorkerScanSuccess()),
+      }
     );
     FlutterBluePlus.cancelWhenScanComplete(subscription);
     await FlutterBluePlus.startScan(
