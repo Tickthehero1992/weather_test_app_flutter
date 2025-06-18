@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:provider/provider.dart';
 import 'ble_worker/ble_worker_page.dart';
-import 'weather_page.dart';
-import 'ble_worker/ble_class_works.dart';
-import 'package:get/get.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -18,7 +14,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
+        cardTheme: CardTheme(
+                  color: Colors.greenAccent[40],
+                  elevation: 8.0,
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0)),
+                  margin: const EdgeInsets.all(16.0),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            textStyle: TextStyle(
+              color: Colors.greenAccent,
+            )
+          )
+        ),
+
         useMaterial3: true,
       ),
       home: BleWorkerPage(),

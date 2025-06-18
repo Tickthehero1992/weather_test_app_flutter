@@ -11,6 +11,7 @@ class CharacteristicReadPage extends StatelessWidget
   final BleWorkerBloc bleBloc;
 
   const CharacteristicReadPage({super.key, required this.bleBloc});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,15 +19,19 @@ class CharacteristicReadPage extends StatelessWidget
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                    child: ElevatedButton(
-                        onPressed: () {
-                          bleBloc.add(BleDisconnectEvent(bleBloc.devicePair));
-                          bleBloc.add(BleScanEvent());
-                        },
-                        child: Text("Return to scan")
-                    )
-                ),
+                  SizedBox(
+                      child: ElevatedButton(
+                          // style: ElevatedButton.styleFrom(
+                          //     foregroundColor: Colors.greenAccent,
+                          //     backgroundColor: Colors.amber
+                          // ),
+                          onPressed: () {
+                            bleBloc.add(BleDisconnectEvent(bleBloc.devicePair));
+                            bleBloc.add(BleScanEvent());
+                          },
+                          child: Text("Return to scan")
+                      )
+                  ),
                 ListView.builder(
                     shrinkWrap: true,
                   itemCount: bleBloc.charParams.length,

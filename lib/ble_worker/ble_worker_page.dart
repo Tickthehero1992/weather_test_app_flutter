@@ -60,11 +60,12 @@ class _BleWorkerPageState extends State<BleWorkerPage>
                         );
                     case BleWorkerInitialSuccess:
                       return  Center(
-                          child: ElevatedButton(onPressed: () {
-                            print("Button Pressed");
-                            bleBloc.add(BleScanEvent());
-                          }, child: Text("SCAN")),
+                        child: ElevatedButton(onPressed: () {
+                          print("Button Pressed");
+                          bleBloc.add(BleScanEvent());
+                        }, child: Text("SCAN")),
                       );
+
                     case BleWorkerInitialError:
                       String error = (state as BleWorkerInitialError).errorInfo;
                       return Center(
