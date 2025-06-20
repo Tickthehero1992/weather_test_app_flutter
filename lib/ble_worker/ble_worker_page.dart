@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:test_project/ble_worker/pages/ble_get_characteristic_page.dart';
@@ -22,8 +25,17 @@ class _BleWorkerPageState extends State<BleWorkerPage>
 
   final BleWorkerBloc bleBloc = BleWorkerBloc();
   Object pervState = BleWorkerInitial;
+  int numTapBreak = 0;
+  late Timer timer;
+
+  void clearTap()
+  {
+    numTapBreak = 0;
+  }
+
   @override
   Widget build(BuildContext context) {
+    timer = Timer.periodic(const Duration(seconds: 5), (_) => clearTap());
     BackButtonInterceptor.add(myInterceptor);
     return Scaffold(
         body: Center(
@@ -95,17 +107,19 @@ class _BleWorkerPageState extends State<BleWorkerPage>
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     // Your logic here
+
     if (stopDefaultButtonEvent) {
       // Handle the back button event
 
     }
+    numTapBreak++;
     if(pervState is BleWorkerGetCharacteristicsSuccess)
     {
       bleBloc.add(BleReadCharacteristicEvent());
     }
-    if(pervState is BleWorkerScanSuccess)
+    if((pervState is BleWorkerInitialSuccess) || (numTapBreak >= 2))
       {
-        bleBloc.add(BleInitEvent());
+        exit(0);
       }
     return true; // Prevent default behavior
   }
