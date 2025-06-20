@@ -45,6 +45,7 @@ dependencies:
   flutter_blue_plus: ^1.35.5
   get: ^4.7.2
   permission_handler: ^12.0.0+1
+  back_button_interceptor: ^8.0.4
 
 dev_dependencies:
   flutter_test:

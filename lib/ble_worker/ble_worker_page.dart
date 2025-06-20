@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'ble_worker_bloc.dart';
 import 'package:test_project/ble_worker/pages/ble_write_characteristic_page.dart';
-
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 
 class BleWorkerPage extends StatefulWidget
@@ -19,36 +19,39 @@ class BleWorkerPage extends StatefulWidget
 
 class _BleWorkerPageState extends State<BleWorkerPage>
 {
-  final BleWorkerBloc bleBloc = BleWorkerBloc();
 
+  final BleWorkerBloc bleBloc = BleWorkerBloc();
+  Object pervState = BleWorkerInitial;
   @override
   Widget build(BuildContext context) {
+    BackButtonInterceptor.add(myInterceptor);
     return Scaffold(
         body: Center(
             child: BlocConsumer(
                 bloc: bleBloc,
                 listener: (context, state) {
-                  if(state is BleWorkerWaitWriteCharacteristic)
-                    {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (c)=> CharacteristicWritePage(guid:state.characteristicUuid, bleBloc: bleBloc,)));
-                    }
-                  if(state is BleWorkerWriteCharacteristicsSuccess)
-                    {
-                      Navigator.of(context).pop();
-                      bleBloc.add(BleReadCharacteristicEvent());
-                    }
-                  if(state is BleWorkerGetCharacteristicsSuccess)
-                    {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (c)=> CharacteristicReadPage(bleBloc: bleBloc,)));
-                    }
-                  if((state is BleWorkerScan) || (state is BleWorkerScanSuccess))
-                    {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (c)=> ScannedReadPage(bleBloc: bleBloc,)));
-                    }
-                  if(state is BleWorkerConnectSuccess)
-                    {
-                      Navigator.of(context).pop();
-                    }
+                      if(state is BleWorkerWaitWriteCharacteristic)
+                      {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (c)=> CharacteristicWritePage(guid:state.characteristicUuid, bleBloc: bleBloc,)));
+                      }
+                      if(state is BleWorkerWriteCharacteristicsSuccess)
+                      {
+                        Navigator.pop(context);
+                        bleBloc.add(BleReadCharacteristicEvent());
+                      }
+                      if(state is BleWorkerGetCharacteristicsSuccess)
+                      {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (c)=> CharacteristicReadPage(bleBloc: bleBloc,)));
+                      }
+                      if((state is BleWorkerScan) || (state is BleWorkerScanSuccess))
+                      {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (c)=> ScannedReadPage(bleBloc: bleBloc,)));
+                      }
+                      if(state is BleWorkerConnectSuccess)
+                      {
+                        Navigator.of(context).pop();
+                      }
+                      pervState  = state!;
                 },
                 builder: (context, state){
                   switch (state.runtimeType)
@@ -71,58 +74,15 @@ class _BleWorkerPageState extends State<BleWorkerPage>
                       return Center(
                         child:Text("Error $error")
                       );
-                    // case BleWorkerScan:
-                    // case BleWorkerScanSuccess:
-                    //   return Center(
-                    //       child: Column(
-                    //         mainAxisAlignment: MainAxisAlignment.center,
-                    //         children: [
-                    //           StreamBuilder<List<ScanResult>>(
-                    //               stream: FlutterBluePlus.scanResults,
-                    //               builder: (context, snapshot) {
-                    //                 if(snapshot.hasError)
-                    //                 {
-                    //                   return Text("Error!");
-                    //                 }
-                    //                 if (snapshot.hasData) {
-                    //                   return Expanded(
-                    //                     child: ListView.builder(
-                    //                         shrinkWrap: true,
-                    //                         itemCount: snapshot.data!.length,
-                    //                         itemBuilder: (context, index) {
-                    //                           final data = snapshot.data![index];
-                    //                           return Card(
-                    //                             elevation: 2,
-                    //                             child: ListTile(
-                    //                               title: Text(data.device.advName.toString()),
-                    //                               subtitle: Text(data.device.remoteId.str),
-                    //                               trailing: Text(data.rssi.toString()),
-                    //                               onTap: () => bleBloc.add(BleConnectEvent(data.device)),
-                    //                             ),
-                    //                           );
-                    //                         }),
-                    //                   );
-                    //                 }else{
-                    //                   return  Center(
-                    //                     child: CircularProgressIndicator(),
-                    //                   );
-                    //                 }
-                    //               }
-                    //           )
-                    //         ],
-                    //       )
-                    //   );
                     case BleWorkerScanError:
                       String err = (state as BleWorkerScanError).error;
                       return Center(
                         child: Text("Error $err")
                       );
                     case BleWorkerConnectSuccess:
+                      bleBloc.add(BleReadCharacteristicEvent());
                       return  Center(
-                        child: ElevatedButton(onPressed: () {
-                          print("Button Pressed");
-                          bleBloc.add(BleReadCharacteristicEvent());
-                        }, child: Text("Read Characteristics")),
+                        child: CircularProgressIndicator(strokeWidth: 0.7),
                       );
                     default :
                       return Container();
@@ -131,6 +91,23 @@ class _BleWorkerPageState extends State<BleWorkerPage>
             )
         )
     );
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    // Your logic here
+    if (stopDefaultButtonEvent) {
+      // Handle the back button event
+
+    }
+    if(pervState is BleWorkerGetCharacteristicsSuccess)
+    {
+      bleBloc.add(BleReadCharacteristicEvent());
+    }
+    if(pervState is BleWorkerScanSuccess)
+      {
+        bleBloc.add(BleInitEvent());
+      }
+    return true; // Prevent default behavior
   }
 }
 

@@ -22,12 +22,15 @@ class MyApp extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0)),
                   margin: const EdgeInsets.all(16.0),
+
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
             textStyle: TextStyle(
               color: Colors.greenAccent,
+              fontSize: 14,
+              fontStyle: FontStyle.italic
             )
           )
         ),
