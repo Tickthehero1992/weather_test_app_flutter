@@ -17,21 +17,21 @@ class CharacteristicReadPage extends StatelessWidget
     return Scaffold(
         body: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+             // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                  SizedBox(
-                      child: ElevatedButton(
-                          // style: ElevatedButton.styleFrom(
-                          //     foregroundColor: Colors.greenAccent,
-                          //     backgroundColor: Colors.amber
-                          // ),
-                          onPressed: () {
-                            bleBloc.add(BleDisconnectEvent(bleBloc.devicePair));
-                            bleBloc.add(BleScanEvent());
-                          },
-                          child: Text("Return to scan")
-                      )
-                  ),
+                  // SizedBox(
+                  //     child: ElevatedButton(
+                  //         // style: ElevatedButton.styleFrom(
+                  //         //     foregroundColor: Colors.greenAccent,
+                  //         //     backgroundColor: Colors.amber
+                  //         // ),
+                  //         onPressed: () {
+                  //           bleBloc.add(BleDisconnectEvent(bleBloc.devicePair));
+                  //           bleBloc.add(BleScanEvent());
+                  //         },
+                  //         child: Text("Return to scan")
+                  //     )
+                  // ),
                 ListView.builder(
                     shrinkWrap: true,
                   itemCount: bleBloc.charParams.length,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'auth_worker/pages/auth_init_page.dart';
 import 'ble_worker/ble_worker_page.dart';
 
 
@@ -37,7 +38,8 @@ class MyApp extends StatelessWidget {
 
         useMaterial3: true,
       ),
-      home: BleWorkerPage(),
+     // home: BleWorkerPage(),
+      home: LoginEnterPage()
     );
   }
 }
