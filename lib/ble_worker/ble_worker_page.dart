@@ -107,15 +107,15 @@ class _BleWorkerPageState extends State<BleWorkerPage>
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     // Your logic here
-
     if (stopDefaultButtonEvent) {
       // Handle the back button event
-
     }
     numTapBreak++;
     if(pervState is BleWorkerGetCharacteristicsSuccess)
     {
-      bleBloc.add(BleReadCharacteristicEvent());
+      bleBloc.add(BleDisconnectEvent(bleBloc.devicePair));
+      bleBloc.add(BleScanEvent());
+      // bleBloc.add(BleReadCharacteristicEvent());
     }
     if((pervState is BleWorkerInitialSuccess) || (numTapBreak >= 2))
       {
