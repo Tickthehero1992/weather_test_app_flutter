@@ -9,8 +9,6 @@ class LoginEnterPage extends StatefulWidget
   _LoginEnterPageState createState()=>_LoginEnterPageState();
 }
 
-
-
 class _LoginEnterPageState extends State<LoginEnterPage>
 {
 final _login = TextEditingController();
@@ -30,7 +28,7 @@ void dispose() {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-              Text("Connecting App"),
+            Text("Connecting App"),
             SizedBox(height: 10,),
             TextField(
               controller: _login,
@@ -63,23 +61,20 @@ void dispose() {
                text: TextSpan(
                  text: "Forgot password?",
                  recognizer: TapGestureRecognizer()..onTap = (){
-
                  }
                )
               ),
             ),
+            SizedBox(height: 26),
             Center(
               child: RichText(
                   text: TextSpan(
                       text: "Register Account",
                       recognizer: TapGestureRecognizer()..onTap = (){
-
                       }
                   )
               ),
             ),
-
-
           ],
         )
       )
