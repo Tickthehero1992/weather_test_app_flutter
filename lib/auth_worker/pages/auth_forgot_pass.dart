@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:test_project/auth_worker/auth_bloc.dart';
 
 class AuthForgotPage extends StatefulWidget
 {
@@ -41,11 +42,11 @@ class _AuthForgotPageState extends State<AuthForgotPage>
                   onPressed: () {
                     if(EmailValidator.validate(_email.text) == true)
                       {
-                        print('Good email');//add event
+                       authBloc.add(AuthForgotGetEvent(email:_email.text));
                       }
                     else
                       {
-                        print('Bad email');
+                        authBloc.add(AuthForgotAskErrorEvent(error: "Bad email"));
                         //add error event
                       }
                   },
@@ -59,5 +60,4 @@ class _AuthForgotPageState extends State<AuthForgotPage>
       )
     );
   }
-
 }

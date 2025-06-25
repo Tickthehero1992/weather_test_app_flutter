@@ -9,7 +9,10 @@ final class AuthForgotState extends AuthState{}
 
 final class AuthForgotSuccessState extends AuthState{}
 
-final class AuthForgotErrorState extends AuthState{}
+final class AuthForgotErrorState extends AuthState{
+  final String error;
+  AuthForgotErrorState({required this.error});
+}
 
 final class AuthRegisterState extends AuthState{}
 

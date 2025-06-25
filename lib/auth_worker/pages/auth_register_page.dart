@@ -61,16 +61,28 @@ class _RegisterPageState extends State<RegisterPage>
             SizedBox(
               child: ElevatedButton(
                 onPressed: () {
-                  if(EmailValidator.validate(_email.text) == true)
-                  {
-                    authBloc.add(AuthRegisterTryEvent(login: _login.text, password: _password.text, email: _email.text));
-
-                  }
+                  if(_login.text.isEmpty)
+                    {
+                      authBloc.add(AuthRegisterErrorEvent(error: "Enter login"));
+                    }
+                  else if(_password.text.isEmpty)
+                    {
+                      authBloc.add(AuthRegisterErrorEvent(error: "Enter password"));
+                    }
                   else
-                  {
-                    authBloc.add(AuthRegisterErrorEvent(error: "Bad email"));
+                    {
+                      if(EmailValidator.validate(_email.text) == true)
+                      {
 
-                  }
+                        authBloc.add(AuthRegisterTryEvent(login: _login.text, password: _password.text, email: _email.text));
+
+                      }
+                      else
+                      {
+                        authBloc.add(AuthRegisterErrorEvent(error: "Bad email"));
+                      }
+                    }
+
                 },
                 child: Text(
                     "Register"

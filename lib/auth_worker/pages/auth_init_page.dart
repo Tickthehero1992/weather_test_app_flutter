@@ -65,7 +65,7 @@ void clearTap()
             {
               Navigator.of(context).push(MaterialPageRoute(builder: (c)=> LoginEnterPage()));
             }
-            if((state is AuthRegisterErrorState) || (state is AuthRegisterSuccessState))
+            if((state is AuthRegisterErrorState) || (state is AuthRegisterSuccessState) || (state is AuthForgotErrorState))
               {
                 Navigator.of(context).pop();
               }
@@ -238,16 +238,38 @@ void clearTap()
                     ],
                   ),
                 );
+              case AuthForgotErrorState:
+                String err = (state as AuthForgotErrorState).error;
+
+                return Scaffold(
+                  body: AlertDialog(
+                    title:  Text('Error send email'),
+                    content:  SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Text("$err"),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Ok'),
+                        onPressed: () {
+                          authBloc.add(AuthForgotEvent());
+                        },
+                      ),
+                    ],
+                  ),
+                );
               default:
                 return Container();
             }
           }
         )
-
       )
     );
-
   }
+
 bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
   // Your logic here
   if (stopDefaultButtonEvent) {

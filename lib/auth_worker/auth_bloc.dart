@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:js_interop';
+import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -23,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState>
     on<AuthInitEvent>(onAuthInitEvent);
     on<AuthRegisterTryEvent>(onAuthRegisterTryEvent);
     on<AuthRegisterErrorEvent>(onRegisterErrorEvent);
+    on<AuthForgotAskErrorEvent>(onAuthForgotAskEvent);
   }
 
   FutureOr<void> onAuthEnterEvent(AuthEnterEvent event, Emitter<AuthState> emit)
@@ -80,6 +82,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState>
   FutureOr<void>  onRegisterErrorEvent(AuthRegisterErrorEvent event, Emitter<AuthState> emit)
   async {
     emit(AuthRegisterErrorState(error: event.error));
+  }
+
+  FutureOr<void>  onAuthForgotAskEvent(AuthForgotAskErrorEvent event, Emitter<AuthState> emit)
+  async {
+    emit(AuthForgotErrorState(error: event.error));
   }
 
   FutureOr<void> onAuthRegisterTryEvent(AuthRegisterTryEvent event, Emitter<AuthState> emit)
