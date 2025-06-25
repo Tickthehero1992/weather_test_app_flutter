@@ -24,7 +24,7 @@ class _LoginEnterPageState extends State<LoginEnterPage>
 {
 final _login = TextEditingController();
 final _password = TextEditingController();
-final AuthBloc authBloc = AuthBloc();
+
 int numTapBreak = 0;
 late Timer timer;
 Object pervState = AuthInitState;
@@ -65,6 +65,10 @@ void clearTap()
             {
               Navigator.of(context).push(MaterialPageRoute(builder: (c)=> LoginEnterPage()));
             }
+            if((state is AuthRegisterErrorState) || (state is AuthRegisterSuccessState))
+              {
+                Navigator.of(context).pop();
+              }
             pervState = state!;
           },
           builder: (context, state){
@@ -126,6 +130,113 @@ void clearTap()
                       ),
                     ),
                   ],
+                );
+              case AuthFailedState:
+                return Scaffold(
+                  body: AlertDialog(
+                    title: const Text('Incorrect data User'),
+                    content: const SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Text('Incorrect login or password'),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Ok'),
+                        onPressed: () {
+                          authBloc.add(AuthInitEvent());
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              case AuthBlocState:
+                return Scaffold(
+                  body: AlertDialog(
+                    title: const Text('Blocked User'),
+                    content: const SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Text('This user is blocked'),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Ok'),
+                        onPressed: () {
+                          authBloc.add(AuthInitEvent());
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              case AuthRegisterSuccessState:
+                return Scaffold(
+                  body: AlertDialog(
+                    title: const Text('User Create!'),
+                    content: const SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Ok'),
+                        onPressed: () {
+                          authBloc.add(AuthInitEvent());
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              case AuthRegisterErrorState:
+                String err = (state as AuthRegisterErrorState).error;
+
+                return Scaffold(
+                  body: AlertDialog(
+                    title:  Text('Error create user'),
+                    content:  SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Text("$err"),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Ok'),
+                        onPressed: () {
+                          authBloc.add(AuthRegisterEvent());
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              case AuthRegisterSuccessState:
+                return Scaffold(
+                  body: AlertDialog(
+                    title:  Text('Register success'),
+                    content:  SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Text("Check your email to confirm"),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Ok'),
+                        onPressed: () {
+                          authBloc.add(AuthInitEvent());
+                        },
+                      ),
+                    ],
+                  ),
                 );
               default:
                 return Container();

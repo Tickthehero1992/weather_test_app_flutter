@@ -21,9 +21,19 @@ final class AuthForgotAskErrorEvent extends AuthEvent{}
 
 final class AuthRegisterEvent extends AuthEvent{}
 
+final class AuthRegisterTryEvent extends AuthEvent{
+   late String email;
+   late String login;
+   late String password;
+   AuthRegisterTryEvent({required this.email, required this.login, required this.password});
+}
+
 final class AuthRegisterSuccessEvent extends AuthEvent{}
 
-final class AuthRegisterErrorEvent extends AuthEvent{}
+final class AuthRegisterErrorEvent extends AuthEvent{
+   final String error;
+   AuthRegisterErrorEvent({required this.error});
+}
 
 final class AuthSuccessEvent extends AuthEvent {}
 

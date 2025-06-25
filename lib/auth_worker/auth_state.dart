@@ -15,7 +15,10 @@ final class AuthRegisterState extends AuthState{}
 
 final class AuthRegisterSuccessState extends AuthState{}
 
-final class AuthRegisterErrorState extends AuthState{}
+final class AuthRegisterErrorState extends AuthState{
+  final String error;
+  AuthRegisterErrorState({required this.error});
+}
 
 final class AuthEnterState extends AuthState{}
 

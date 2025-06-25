@@ -2,8 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
+import '../auth_bloc.dart';
+
 class RegisterPage extends StatefulWidget
 {
+
   const RegisterPage({super.key});
 
   @override
@@ -16,6 +19,8 @@ class _RegisterPageState extends State<RegisterPage>
   final _email = TextEditingController();
   final _login = TextEditingController();
   final _password = TextEditingController();
+
+  _RegisterPageState();
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +63,13 @@ class _RegisterPageState extends State<RegisterPage>
                 onPressed: () {
                   if(EmailValidator.validate(_email.text) == true)
                   {
-                    print('Good email');//add event
+                    authBloc.add(AuthRegisterTryEvent(login: _login.text, password: _password.text, email: _email.text));
+
                   }
                   else
                   {
-                    print('Bad email');//add error event
+                    authBloc.add(AuthRegisterErrorEvent(error: "Bad email"));
+
                   }
                 },
                 child: Text(
