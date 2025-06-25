@@ -15,9 +15,17 @@ final class AuthForgotEvent extends AuthEvent{}
 
 final class AuthForgotAskEvent extends AuthEvent{}
 
+final class AuthForgotGetEvent extends AuthEvent{
+   final String email;
+   AuthForgotGetEvent({required this.email});
+}
+
 final class AuthForgotAskSuccessEvent extends AuthEvent{}
 
-final class AuthForgotAskErrorEvent extends AuthEvent{}
+final class AuthForgotAskErrorEvent extends AuthEvent{
+   final String error;
+   AuthForgotAskErrorEvent({required this.error});
+}
 
 final class AuthRegisterEvent extends AuthEvent{}
 
@@ -37,6 +45,9 @@ final class AuthRegisterErrorEvent extends AuthEvent{
 
 final class AuthSuccessEvent extends AuthEvent {}
 
-final class AuthFailedEvent extends AuthEvent {}
+final class AuthFailedEvent extends AuthEvent {
+   final String error;
+   AuthFailedEvent({required this.error});
+}
 
 final class AuthBlocEvent extends AuthEvent{}

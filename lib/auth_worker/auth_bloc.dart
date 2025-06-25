@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:js_interop';
+import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -23,11 +24,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState>
     on<AuthInitEvent>(onAuthInitEvent);
     on<AuthRegisterTryEvent>(onAuthRegisterTryEvent);
     on<AuthRegisterErrorEvent>(onRegisterErrorEvent);
+    on<AuthForgotAskErrorEvent>(onAuthForgotAskEvent);
+    on<AuthForgotGetEvent>(onAuthForgotGetEvent);
+    on<AuthFailedEvent>(onAuthFailedEvent);
   }
 
   FutureOr<void> onAuthEnterEvent(AuthEnterEvent event, Emitter<AuthState> emit)
   async {
         var url = Uri.http(urlName, '/login');
+
         Map data = {
           'login':event.login,
           'password':event.password
@@ -46,7 +51,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState>
               emit(AuthSuccessState());
               break;
             case 401:
-              emit(AuthFailedState());
+              emit(AuthFailedState(error: "Wrong login or password"));
               break;
             case 403:
               emit(AuthBlocState());
@@ -59,6 +64,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState>
         finally{
 
         }
+  }
+  FutureOr<void> onAuthFailedEvent(AuthFailedEvent event, Emitter<AuthState> emit)
+  async {
+    emit(AuthFailedState(error: event.error));
   }
 
   FutureOr<void> onAuthForgotEvent(AuthEvent event, Emitter<AuthState> emit)
@@ -80,6 +89,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState>
   FutureOr<void>  onRegisterErrorEvent(AuthRegisterErrorEvent event, Emitter<AuthState> emit)
   async {
     emit(AuthRegisterErrorState(error: event.error));
+  }
+
+  FutureOr<void>  onAuthForgotAskEvent(AuthForgotAskErrorEvent event, Emitter<AuthState> emit)
+  async {
+    emit(AuthForgotErrorState(error: event.error));
   }
 
   FutureOr<void> onAuthRegisterTryEvent(AuthRegisterTryEvent event, Emitter<AuthState> emit)
@@ -108,11 +122,45 @@ class AuthBloc extends Bloc<AuthEvent, AuthState>
       }
     }
     catch(e){
-      print(e);
+      emit(AuthRegisterErrorState(error: e.toString()));
     }
     finally{
 
     }
   }
+
+  FutureOr<void> onAuthForgotGetEvent (AuthForgotGetEvent event, Emitter<AuthState> emit)
+  async {
+    var url = Uri.http(urlName, '/forgot');
+    Map data = {
+      'email':event.email
+    };
+
+    try{
+
+      final req = http.Request("POST", url);
+      req.body = jsonEncode(data);
+      req.headers.addAll({"Content-Type":"application/json"});
+      var response = await req.send();
+
+      //var response = await http.post(url, headers: {"Content-Type":"application/x-www-form-urlencoded"}, body: data);
+      switch(response.statusCode){
+        case 200:
+          emit(AuthForgotSuccessState());
+          break;
+        case 404:
+          emit(AuthForgotErrorState(error: "No such user"));
+          break;
+      }
+    }
+    catch(e){
+      emit(AuthRegisterErrorState(error: e.toString()));
+    }
+    finally{
+
+    }
+
+  }
+
 
 }

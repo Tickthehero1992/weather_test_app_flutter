@@ -28,7 +28,7 @@ final _password = TextEditingController();
 int numTapBreak = 0;
 late Timer timer;
 Object pervState = AuthInitState;
-
+List <Object> statesToGoInit = [AuthRegisterErrorState,AuthRegisterSuccessState,AuthForgotErrorState, AuthForgotSuccessState, AuthFailedState];
 @override
 void dispose() {
   _login.dispose();
@@ -65,7 +65,9 @@ void clearTap()
             {
               Navigator.of(context).push(MaterialPageRoute(builder: (c)=> LoginEnterPage()));
             }
-            if((state is AuthRegisterErrorState) || (state is AuthRegisterSuccessState))
+            // if((state is AuthRegisterErrorState) || (state is AuthRegisterSuccessState) || (state is AuthForgotErrorState)
+            // || (state is AuthForgotSuccessState)
+            if(statesToGoInit.contains(state))
               {
                 Navigator.of(context).pop();
               }
@@ -100,7 +102,18 @@ void clearTap()
                     SizedBox(
                       child: ElevatedButton(
                         onPressed: () {
-                          authBloc.add(AuthEnterEvent(login: _login.text, password: _password.text));
+                          if(_login.text.isEmpty)
+                            {
+                              authBloc.add(AuthFailedEvent(error: "Enter login"));
+                            }
+                          else if (_password.text.isEmpty)
+                            {
+                              authBloc.add(AuthFailedEvent(error: "Enter password"));
+                            }
+                          else
+                            {
+                              authBloc.add(AuthEnterEvent(login: _login.text, password: _password.text));
+                            }
                         },
                         child: Text(
                             "Login"
@@ -132,13 +145,14 @@ void clearTap()
                   ],
                 );
               case AuthFailedState:
+                String err = (state as AuthFailedState).error;
                 return Scaffold(
                   body: AlertDialog(
-                    title: const Text('Incorrect data User'),
-                    content: const SingleChildScrollView(
+                    title: Text('Incorrect data User'),
+                    content: SingleChildScrollView(
                       child: ListBody(
                         children: <Widget>[
-                          Text('Incorrect login or password'),
+                          Text('$err'),
                         ],
                       ),
                     ),
@@ -238,16 +252,59 @@ void clearTap()
                     ],
                   ),
                 );
+              case AuthForgotErrorState:
+                String err = (state as AuthForgotErrorState).error;
+
+                return Scaffold(
+                  body: AlertDialog(
+                    title:  Text('Error send email'),
+                    content:  SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Text("$err"),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Ok'),
+                        onPressed: () {
+                          authBloc.add(AuthForgotEvent());
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              case AuthForgotSuccessState:
+                return Scaffold(
+                  body: AlertDialog(
+                    title:  Text('Check email'),
+                    content:  SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Text("Login pass send to email"),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Ok'),
+                        onPressed: () {
+                          authBloc.add(AuthInitEvent());
+                        },
+                      ),
+                    ],
+                  ),
+                );
               default:
                 return Container();
             }
           }
         )
-
       )
     );
-
   }
+
 bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
   // Your logic here
   if (stopDefaultButtonEvent) {
