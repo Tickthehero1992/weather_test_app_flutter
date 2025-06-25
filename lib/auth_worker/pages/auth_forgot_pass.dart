@@ -16,6 +16,7 @@ class _AuthForgotPageState extends State<AuthForgotPage>
 
   @override
   void dispose() {
+    super.dispose();
     _email.dispose();
   }
 

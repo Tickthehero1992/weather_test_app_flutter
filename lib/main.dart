@@ -41,9 +41,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
      // home: BleWorkerPage(),
-      //home: LoginEnterPage()
+      home: LoginEnterPage()
      // home: AuthForgotPage()
-    home:  RegisterPage()
+    //home:  RegisterPage()
     );
   }
 }
