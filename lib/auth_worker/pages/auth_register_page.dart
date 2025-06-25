@@ -21,7 +21,6 @@ class _RegisterPageState extends State<RegisterPage>
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -35,7 +34,6 @@ class _RegisterPageState extends State<RegisterPage>
                 labelText: "Enter Email",
                 border: OutlineInputBorder(),
               ),
-
             ),
             SizedBox(height: 5),
             TextField(
@@ -66,7 +64,6 @@ class _RegisterPageState extends State<RegisterPage>
                   {
                     print('Bad email');//add error event
                   }
-
                 },
                 child: Text(
                     "Register"
