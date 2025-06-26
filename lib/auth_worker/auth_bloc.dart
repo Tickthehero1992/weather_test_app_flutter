@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:js_interop';
-import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -32,7 +31,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState>
   FutureOr<void> onAuthEnterEvent(AuthEnterEvent event, Emitter<AuthState> emit)
   async {
         var url = Uri.http(urlName, '/login');
-
         Map data = {
           'login':event.login,
           'password':event.password
