@@ -28,7 +28,7 @@ final _password = TextEditingController();
 int numTapBreak = 0;
 late Timer timer;
 Object pervState = AuthInitState;
-List <Object> statesToGoInit = [AuthRegisterErrorState,AuthRegisterSuccessState,AuthForgotErrorState, AuthForgotSuccessState, AuthFailedState];
+
 @override
 void dispose() {
   _login.dispose();
@@ -301,10 +301,12 @@ void clearTap()
             }
           }
         )
+
       )
     );
   }
 
+  }
 bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
   // Your logic here
   if (stopDefaultButtonEvent) {
