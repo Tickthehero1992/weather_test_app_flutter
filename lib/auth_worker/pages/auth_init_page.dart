@@ -28,6 +28,7 @@ final _password = TextEditingController();
 int numTapBreak = 0;
 late Timer timer;
 Object pervState = AuthInitState;
+List <Object> statesToGoInit = [AuthRegisterErrorState,AuthRegisterSuccessState,AuthForgotErrorState, AuthForgotSuccessState, AuthFailedState];
 
 @override
 void dispose() {
@@ -65,9 +66,8 @@ void clearTap()
             {
               Navigator.of(context).push(MaterialPageRoute(builder: (c)=> LoginEnterPage()));
             }
-            // if((state is AuthRegisterErrorState) || (state is AuthRegisterSuccessState) || (state is AuthForgotErrorState)
-            // || (state is AuthForgotSuccessState)
-            if(statesToGoInit.contains(state))
+            if((state is AuthRegisterErrorState) || (state is AuthRegisterSuccessState) || (state is AuthForgotErrorState)
+            || (state is AuthForgotSuccessState) || (state is AuthFailedState))
               {
                 Navigator.of(context).pop();
               }
@@ -305,8 +305,6 @@ void clearTap()
       )
     );
   }
-
-  }
 bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
   // Your logic here
   if (stopDefaultButtonEvent) {
@@ -315,7 +313,7 @@ bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
   numTapBreak++;
   authBloc.add(AuthInitEvent());
 
-  if((numTapBreak >= 2) || (pervState is AuthInitState))
+  if((numTapBreak >= 2))
   {
     // if(Platform.isAndroid)
     //   {
@@ -324,4 +322,5 @@ bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
   }
   return true; // Prevent default behavior
 }
-}
+  }
+

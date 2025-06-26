@@ -82,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage>
                     }
 
                   }
-                },
+                ,
                 child: Text(
                     "Register"
                 ),
